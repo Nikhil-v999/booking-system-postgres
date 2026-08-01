@@ -1,0 +1,1 @@
+docker run --name fdp-test -e POSTGRES_PASSWORD=test123 -e POSTGRES_DB=fdp -p 5432:5432 -v ${PWD}/db/init.sql:/docker-entrypoint-initdb.d/init.sql -d postgres
