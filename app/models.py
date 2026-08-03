@@ -16,7 +16,7 @@ class Booking(Base):
     __tablename__ = "bookings"
 
     b_id = Column(Integer, primary_key=True)
-    b_r_id = Column(Integer, ForeignKey("resources.r_id"))
+    b_r_id = Column(Integer, ForeignKey("resources.r_id"),nullable=False)
     b_user_id = Column(Integer, nullable=False)
     b_time = Column(TSTZRANGE, nullable=False)
     b_status = Column(String, nullable=False, default="active")

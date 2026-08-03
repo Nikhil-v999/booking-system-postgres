@@ -67,3 +67,10 @@ class StatusHistoryResponse(BaseModel):
     class Config:
         from_attributes = True  # lets this schema read directly from a SQLAlchemy object, not just a dict
 
+class BookingConflict(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+class AvailabilityResponse(BaseModel):
+    available: bool
+    conflicting_bookings: list[BookingConflict]
