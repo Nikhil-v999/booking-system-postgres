@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from app.database import get_db
-from app.schemas import BookingCreate, BookingResponse
-from app.models import Booking
+from app.schemas import BookingCreate, BookingResponse,StatusHistoryResponse
+from app.models import Booking,StatusHistory
 
 router = APIRouter()
 @router.post("/bookings", response_model=BookingResponse)
@@ -67,3 +67,12 @@ def cancel_booking(b_id: int, db: Session = Depends(get_db)):
 #
 #     else
 #         return null
+
+@router.get("/bookings/{id}/history",response_model=list[StatusHistoryResponse])
+def get_history(id:int,db:Session=Depends(get_db)):
+    booking = db.query(Booking).filter(Booking.b_id == b_id).first()
+    if booking is None:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    history = db.query(StatusHistory).filter(StatusHistory.st_b_id == id).order_by(StatusHistory.st_time.desc()).all()
+
+    return history

@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,model_validator
 from typing import Optional
-from datetime import datetime
+from datetime import datetime,timedelta
 class ResourceCreate(BaseModel):
     r_name: str
     r_cat: Optional[str]=None        # think about whether this needs `str | None` — same nullable question as models.py, one layer up
@@ -20,6 +20,11 @@ class BookingCreate(BaseModel):
     start_time: datetime
     end_time: datetime
 
+    @model_validator(mode="after")
+    def enforce_hour_grid(self):
+        self.start_time = self.start_time.replace(minute=0, second=0, microsecond=0)
+        self.end_time = self.start_time + timedelta(hours=1)
+        return self
 
 
 class BookingResponse(BaseModel):
@@ -39,6 +44,11 @@ class WaitlistCreate(BaseModel):
     start_time: datetime
     end_time: datetime
 
+    @model_validator(mode="after")
+    def enforce_hour_grid(self):
+        self.start_time = self.start_time.replace(minute=0, second=0, microsecond=0)
+        self.end_time = self.start_time + timedelta(hours=1)
+        return self
 
 
 class WaitlistResponse(BaseModel):
