@@ -84,3 +84,13 @@ class BookingConflict(BaseModel):
 class AvailabilityResponse(BaseModel):
     available: bool
     conflicting_bookings: list[BookingConflict]
+
+class AvailabilityQuery(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+    @model_validator(mode="after")
+    def enforce_hour_grid(self):
+        self.start_time = self.start_time.replace(minute=0, second=0, microsecond=0)
+        self.end_time = self.start_time + timedelta(hours=1)
+        return self

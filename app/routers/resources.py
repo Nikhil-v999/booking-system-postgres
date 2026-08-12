@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.schemas import ResourceCreate,ResourceResponse,AvailabilityResponse, BookingConflict
+from app.schemas import ResourceCreate,ResourceResponse,AvailabilityResponse, BookingConflict,AvailabilityQuery
 from app.models import Resource,Booking
 from datetime import datetime
 from sqlalchemy import and_,func
@@ -22,8 +22,8 @@ def create_resource(resource: ResourceCreate,db : Session = Depends(get_db)):
 
 
 @router.get("/resources/{r_id}/availability", response_model=AvailabilityResponse)
-def check_availability(r_id: int, start_time: datetime, end_time: datetime, db: Session = Depends(get_db)):
-    requested_range = func.tstzrange(start_time, end_time)
+def check_availability(r_id: int,query : AvailabilityQuery = Depends(), db: Session = Depends(get_db)):
+    requested_range = func.tstzrange(query.start_time, query.end_time)
 
     conflicts = db.query(Booking).filter(
         Booking.b_r_id == r_id,
